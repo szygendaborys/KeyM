@@ -1,10 +1,8 @@
 import React from 'react';
 import styled, { createGlobalStyle }  from 'styled-components';
-import logo from './logo.svg';
 import './App.css';
 
 import * as ROUTES from '../../constants/routes';
-import * as colours from '../../constants/colours.js';
 import LandingPage from '../LandingPage';
 
 import {
@@ -15,10 +13,10 @@ import {
 // /* color: ${props => (props.whiteColor ? 'white' : 'black')}; */
 const GlobalStyle = createGlobalStyle`
   body {
-    background: ${colours.BG_MAIN};
+    background: black;
     width: 100vw;
     height: 100wh;
-    color: ${colours.TEXT_MAIN};
+    color: whitesmoke;
   }
   * {
     box-sizing: border-box;
@@ -37,6 +35,7 @@ const App = () => {
        <GlobalStyle />
        <MainApp>
          {/* 
+         
            <Navigation />
          */}
          <Route exact path={ROUTES.LANDING} component={LandingPage} />

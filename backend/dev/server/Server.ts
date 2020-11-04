@@ -1,10 +1,12 @@
 import App from './App';
 import { HomeController } from './controllers/HomeController';
+import { initio } from './Socket';
 
 require('dotenv').config();
 let os = require('os');
-const port = process.env.BACKEND_PORT || '8000';
+const port = process.env.BACKEND_PORT || '3001';
 let application: App;
+// const options = {};
 
 export function startRestServer() {
     application = new App([
@@ -12,7 +14,9 @@ export function startRestServer() {
         // Place other controllers here...
     ]);
     application.initDb(function () {
-        application.app.listen(port);
+        const server = application.app.listen(port);
+        // const server = require('https').createServer(options, application.app).listen(port);
+        initio(server);
         console.log(`Server is listening on port ${port}`);
         console.log(`Operating system information: `);
         console.log(`Total cpus: ${os.cpus().length}`);

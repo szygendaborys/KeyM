@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Example from './Example';
 import styled from 'styled-components';
 import useHost from '../../contexts/host';
+import Input from './Input';
 
 const TestApiButton = styled.button`
     width:400px;
@@ -14,13 +15,11 @@ const TestApiButton = styled.button`
 `;
 
 export const LandingPage = () => {
-    const { hostApi } = useHost();
-
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(undefined);
 
     useEffect(() => {
-        const api = `${hostApi}/home`;
+        const api = `/api/home`;
         fetch(`${api}`).then(res => {
             console.log("An example of fetching data while component did mount.")
             console.log(res);
@@ -36,7 +35,7 @@ export const LandingPage = () => {
     }, [])
 
     const testApi = () => {
-        const api = `${hostApi}/home`;
+        const api = `/api/home`;
         fetch(`${api}`).then(res => {
             console.log("An example of fetching data on click.")
             console.log(res);
@@ -71,6 +70,7 @@ export const LandingPage = () => {
             <TestApiButton onClick={() => testApi()}>
                 Click me to test API. (Check console)
             </TestApiButton>
+            <Input />
         </Example>
     )
 }

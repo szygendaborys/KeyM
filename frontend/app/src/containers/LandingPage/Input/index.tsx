@@ -7,17 +7,20 @@ let socket:typeof Socket;
 
 export const Input:React.FunctionComponent = () => {
     // const [socket, setSocket] = useState<typeof Socket | undefined>(undefined);
-    const [points, setPoints] = useState<number>(0);
+    const [room, setRoomId] = useState<string>('');
+    const roomId = 'testRoom123';
 
-    useEffect(() => {
+    useEffect(() => {   
         socket = io();
 
-        socket.on("add point", (data:{user:string}) => {
-            const newPoints = points+1;
-            setPoints(newPoints);
-            console.log(data);
-            console.log(`Points: ${points}`);
+        socket.on("add point", ({socketId,points}:{socketId:string, points:string}) => {
+
+            console.log(`A player of id ${socketId} score is ${points}`);
         });
+
+        socket.on("joined to", (data:{roomId:string}) => {
+            setRoomId(data.roomId);
+        })
 
         // return () => socket.disconnect();
       }, []);
@@ -25,7 +28,11 @@ export const Input:React.FunctionComponent = () => {
     const onSocketInput = (e:any) => {
         const value = e.target.value;
         console.log(value);
-        socket.emit('char type', value);
+        const data = {
+            char:value,
+            roomId
+        }
+        socket.emit('char type', data);
     }
 
     return (

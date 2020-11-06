@@ -1,5 +1,6 @@
 import App from './App';
 import { HomeController } from './controllers/HomeController';
+import { createRedisClient } from './Redis';
 import { initio } from './Socket';
 
 require('dotenv').config();
@@ -9,6 +10,7 @@ let application: App;
 // const options = {};
 
 export function startRestServer() {
+    createRedisClient();
     application = new App([
         new HomeController(),
         // Place other controllers here...

@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import PointHandler from "../game/points/PointsHandler";
 import RoomManager from "../game/room/RoomManager";
-import { getRedisClient } from "../Redis";
+import TypingChecker from "../game/typing/TypingChecker";
 
 class TypingSocket {
     private _socket:Socket;
@@ -17,15 +17,13 @@ class TypingSocket {
     } 
 
     private _initTyping() {
-        this._socket.on('char type', ({roomId,char}:{roomId:string, char:string}) => {
+        this._socket.on('char type', ({roomId,char,at}:{roomId:string, char:string, at:number}) => {
             let pointsHandler = new PointHandler(roomId);
+            let typingChecker = new TypingChecker(pointsHandler);
             console.log("click");
-            
-            // this._roomManager.getPlayerData(this._socket.id, roomId).then(res => {
-            //     console.log(res);
-            // })
 
-            pointsHandler.addPoint(this._socket.id)
+            if(typingChecker.checkChar(char, at))
+                pointsHandler.addPoint(this._socket.id)
 
             pointsHandler.getPlayerPoints(this._socket.id).then((points:string) => {
                 const data = {
@@ -35,6 +33,9 @@ class TypingSocket {
                 this._socket.broadcast.to(roomId).emit('add point', data);
             });
 
+            // this._roomManager.getPlayerData(this._socket.id, roomId).then(res => {
+            //     console.log(res);
+            // })
         })
     }
 

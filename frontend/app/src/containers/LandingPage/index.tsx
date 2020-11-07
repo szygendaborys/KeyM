@@ -3,6 +3,7 @@ import Example from './Example';
 import styled from 'styled-components';
 import useHost from '../../contexts/host';
 import Input from './Input';
+import Wrapper from '../../components/Wrapper';
 
 const TestApiButton = styled.button`
     width:400px;
@@ -66,12 +67,12 @@ export const LandingPage = () => {
     }
 
     return (
-        <Example>
+        <Wrapper>
             <TestApiButton onClick={() => testApi()}>
                 Click me to test API. (Check console)
             </TestApiButton>
             <Input />
-        </Example>
+        </Wrapper>
     )
 }
 

@@ -3,6 +3,7 @@ import UserInput from './UserInput';
 import io from 'socket.io-client';
 import { Socket } from 'socket.io-client';
 import { GameText } from '../GameText';
+import Wrapper from '../../../components/Wrapper';
 
 let socket:typeof Socket;
 
@@ -46,10 +47,10 @@ export const Input:React.FunctionComponent = () => {
     }
 
     return (
-        <div>
+        <Wrapper width={40} height={60}>
             <GameText text={gameText} />
             <UserInput onChange={(e) => onSocketInput(e)} />
-        </div>
+        </Wrapper>
     )
 
 }

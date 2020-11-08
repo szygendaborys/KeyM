@@ -17,18 +17,6 @@ export const Game = () => {
     const gameTextRef = useRef(fetchedGameText);
     const [playerText, setPlayerText] = useState<string>('');
 
-    const recount = (playerText:string) => {
-        let i = 0;
-        let playerPoints = 0;
-        const gameText = gameTextRef.current;
-        while(i < gameText.length && i < playerText.length) {
-            if(gameText[i] === playerText[i])
-                playerPoints++;
-            i++;
-        }
-        setPoints(playerPoints);
-    }
-
     useEffect(() => {   
         setGameText(fetchedGameText);
 
@@ -43,7 +31,7 @@ export const Game = () => {
 
             return function(e:any) {
                 if(e.keyCode === 8 && index > 0) {
-                    if(text.slice(0,-1) === gameText[index])
+                    if(text.charAt(index - 1) === gameText[index - 1])
                         points--;
                     
                     index--;
@@ -73,8 +61,7 @@ export const Game = () => {
 
                 setKeyIndex(index);
                 setPlayerText(text);
-                // @ts-ignore
-                recount(text);
+                setPoints(points);
                 forceUpdate();
             }
         }

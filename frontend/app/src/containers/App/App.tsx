@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { createGlobalStyle }  from 'styled-components';
+import styled, { createGlobalStyle, ThemeProvider }  from 'styled-components';
 import './App.css';
 
 import * as ROUTES from '../../constants/routes';
@@ -29,9 +29,18 @@ const MainApp = styled.div`
     height: 100vh;
 `;
 
+const GlobalTheme = {
+  letterState: {
+    correct: 'green',
+    incorrect: 'red',
+    unknown: 'gray'
+  }
+};
+
 const App = () => {
   return (
     <Router>
+      <ThemeProvider theme={GlobalTheme} >
        <GlobalStyle />
        <MainApp>
          {/* 
@@ -41,6 +50,7 @@ const App = () => {
          <Route exact path={ROUTES.LANDING} component={LandingPage} />
          {/* <Route path={ROUTES.SEARCH_PAGE} component={SearchPage} /> */}
        </MainApp>
+       </ThemeProvider>
      </Router>
   );
 }

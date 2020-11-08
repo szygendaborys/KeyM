@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Example from './Example';
 import styled from 'styled-components';
 import useHost from '../../contexts/host';
-import Input from './Input';
+import Input from '../Game/Input';
 import Wrapper from '../../components/Wrapper';
+import Game from '../Game';
 
 const TestApiButton = styled.button`
     width:400px;
@@ -68,10 +69,7 @@ export const LandingPage = () => {
 
     return (
         <Wrapper>
-            <TestApiButton onClick={() => testApi()}>
-                Click me to test API. (Check console)
-            </TestApiButton>
-            <Input />
+            <Game />
         </Wrapper>
     )
 }

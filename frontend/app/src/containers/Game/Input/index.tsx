@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import UserInput from './UserInput';
 import io from 'socket.io-client';
 import { Socket } from 'socket.io-client';
-import { GameText } from '../GameText';
 import Wrapper from '../../../components/Wrapper';
 
 let socket:typeof Socket;

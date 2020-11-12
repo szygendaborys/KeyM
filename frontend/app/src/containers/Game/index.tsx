@@ -1,13 +1,16 @@
 import React, { useEffect, useState, useReducer, useRef } from "react";
 import io, { Socket } from "socket.io-client";
 import Wrapper from "../../components/Wrapper";
-import GameText from "./GameText";
+import Letter from "./GameText/Letter";
+import GameTextArea from "./GameText/GameTextArea";
+import TextWrapper from "./GameText/TextWrapper";
 import { isCharacterKeyPress } from './Utils/TypingUtils';
 
 let socket:typeof Socket;
-const fetchedGameText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
+const fetchedGameText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
 
 export const Game = () => {
+    const textareaDOM:any = useRef(null);
     const [points, setPoints] = useState<number>(0);
     const [roomId, setRoomId] = useState<string>('testRoom123');
     const [keyIndex, setKeyIndex] = useState<number>(0);
@@ -17,59 +20,61 @@ export const Game = () => {
     const gameTextRef = useRef(fetchedGameText);
     const [playerText, setPlayerText] = useState<string>('');
 
+    let typingListener = function(e:any) {
+        let index = keyIndex;
+        let text = playerText;
+        let playerPoints = points;
+        const gameText = gameTextRef.current;
+
+        if(e.keyCode === 8 && index > 0) {
+            const char = text.charAt(keyIndex - 1)
+            const data = {
+                at:keyIndex - 1,
+                roomId
+            }
+            if(char === gameText[keyIndex - 1])
+                playerPoints--;
+            
+            index--;
+            
+            socket.emit('remove char', data)
+            setKeyIndex(index);
+            text = text.slice(0,keyIndex - 1);
+        } else if(isCharacterKeyPress(e)) {
+            const char = e.key;
+            const data = {
+                char,
+                at:keyIndex,
+                roomId
+            }
+            socket.emit('char type', data);
+
+            if(gameText[index] === char)
+                playerPoints++;
+
+            index++;
+            text += char;
+        }
+
+        console.log(index);
+        console.log(text);
+
+        setKeyIndex(index);
+        setPlayerText(text);
+        setPoints(playerPoints);
+        forceUpdate();
+    }
+
     useEffect(() => {   
         setGameText(fetchedGameText);
 
         socket = io();
 
-        // Currying
-        const typingListener = (roomId:string, keyIndex:number, setKeyIndex:Function, playerPoints:number) => {
-            let index = keyIndex;
-            let text = playerText;
-            let points = playerPoints;
-            const gameText = gameTextRef.current;
-
-            return function(e:any) {
-                if(e.keyCode === 8 && index > 0) {
-                    if(text.charAt(index - 1) === gameText[index - 1])
-                        points--;
-                    
-                    index--;
-                    // emit.removeLastPoint
-                    setKeyIndex(index);
-                    text = text.slice(0,-1);
-                }
-
-                if(isCharacterKeyPress(e)) {
-                    const char = e.key;
-                    const data = {
-                        char,
-                        at:keyIndex,
-                        roomId
-                    }
-                    socket.emit('char type', data);
-
-                    if(gameText[index] === char)
-                        points++;
-
-                    index++;
-                    text += char;
-                }
-
-                console.log(index);
-                console.log(text);
-
-                setKeyIndex(index);
-                setPlayerText(text);
-                setPoints(points);
-                forceUpdate();
-            }
-        }
-
-        document.addEventListener('keydown', typingListener(roomId, keyIndex,setKeyIndex, points).bind({gameText, playerText}), true);
+        textareaDOM.current.focus();
+        
+        document.addEventListener('click', () => textareaDOM.current.focus(), true);
 
         socket.on("add point", ({socketId,points}:{socketId:string, points:string}) => {
-
             console.log(`A player of id ${socketId} score is ${points}`);
         });
 
@@ -78,7 +83,6 @@ export const Game = () => {
         //     setRoomId(data.roomId);
         // })
 
-
         // return () => socket.disconnect();
         // return () => document.removeEventListener();
     }, []);
@@ -86,7 +90,12 @@ export const Game = () => {
     return (
         <Wrapper>
             Points: {points}
-            <GameText text={gameText} playerText={playerText} keyIndex={keyIndex} />
+            {/* <GameText text={gameText} playerText={playerText} keyIndex={keyIndex} /> */}
+
+            <TextWrapper width='60%' height='auto' horizontal>
+                {gameText.split('').map((char:string, i:number) => <Letter key={`char${i}`} char={char} index={i} isIndexTarget={keyIndex === i} playerChar={playerText[i]}/>)}
+                <GameTextArea ref={textareaDOM} onKeyDown={(e:any) => typingListener(e)}/>
+            </TextWrapper>
         </Wrapper>
     );
 }

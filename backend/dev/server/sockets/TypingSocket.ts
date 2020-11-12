@@ -1,8 +1,9 @@
+import { stringify } from "querystring";
 import { Socket } from "socket.io";
 import PointHandler from "../game/points/PointsHandler";
 import RoomManager from "../game/room/RoomManager";
-import TypingChecker from "../game/typing/TypingChecker";
-
+import TypingHandler from "../game/typing/TypingHandler";
+TypingHandler
 class TypingSocket {
     private _socket:Socket;
     private _roomManager:RoomManager = new RoomManager();
@@ -14,15 +15,17 @@ class TypingSocket {
 
     private _init() {
         this._initTyping();
+        this._initCharRemoval();
+
     } 
 
     private _initTyping() {
         this._socket.on('char type', ({roomId,char,at}:{roomId:string, char:string, at:number}) => {
-            let pointsHandler = new PointHandler(roomId);
-            let typingChecker = new TypingChecker(pointsHandler);
+            const pointsHandler = new PointHandler(roomId);
+            const typingHandler = new TypingHandler(pointsHandler);
             console.log("click");
 
-            if(typingChecker.checkChar(char, at))
+            if(typingHandler.checkChar(char, at))
                 pointsHandler.addPoint(this._socket.id)
 
             pointsHandler.getPlayerPoints(this._socket.id).then((points:string) => {
@@ -33,10 +36,26 @@ class TypingSocket {
                 this._socket.broadcast.to(roomId).emit('add point', data);
             });
 
-            // this._roomManager.getPlayerData(this._socket.id, roomId).then(res => {
-            //     console.log(res);
-            // })
+            typingHandler.addCharToPlayerString(this._socket.id, roomId, char);
+        
         })
+    }
+
+    private _initCharRemoval() {
+        try {
+            this._socket.on('remove char', ({roomId,at}:{roomId:string, at?:number}) => {
+                const pointsHandler = new PointHandler(roomId);
+                const typingHandler = new TypingHandler(pointsHandler);
+    
+                typingHandler.removeCharFromPlayerString(this._socket.id, roomId, at).then(res => {
+                    if(res.shouldRemovePoint){
+                        pointsHandler.addPoint(this._socket.id, -1);
+                    }
+                });
+            })
+        } catch (err) {
+            console.error(err);
+        }
     }
 
 }

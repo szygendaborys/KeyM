@@ -1,3 +1,4 @@
+import RedisAffixes from "../../../constants/RedisAffixes";
 import { getRedisClient } from "../../Redis";
 
 export default class PointHandler {
@@ -10,10 +11,11 @@ export default class PointHandler {
     }
 
     public addPoint(socketId:string, value:number = 1) {
-        this._redisClient.hincrby(this._roomId, `${socketId}:points`, value);
+        this._redisClient.hincrby(this._roomId, `${socketId}${RedisAffixes.Suffixes.PLAYER_POINTS}`, value);
     }
 
     public getPlayerPoints(socketId:string) {
-        return this._redisClient.hgetAsync(this._roomId, `${socketId}:points`);
+        return this._redisClient.hgetAsync(this._roomId, `${socketId}${RedisAffixes.Suffixes.PLAYER_POINTS}`);
     }
+
 }

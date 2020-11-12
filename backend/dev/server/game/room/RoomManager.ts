@@ -1,4 +1,5 @@
 import { threadId } from "worker_threads";
+import RedisAffixes from "../../../constants/RedisAffixes";
 import { getRedisClient } from "../../Redis";
 
 export default class RoomManager {
@@ -17,13 +18,13 @@ export default class RoomManager {
     }
 
     public addPlayer(id:string, roomId:string) {
-        this._redisClient.sadd(`${roomId}:players`, id); 
-        this._redisClient.hset(roomId, `${id}:points`, 0);
+        this._redisClient.sadd(`${roomId}${RedisAffixes.Suffixes.PLAYERS}`, id); 
+        this._redisClient.hset(roomId, `${id}${RedisAffixes.Suffixes.PLAYER_POINTS}`, 0);
     }
 
     public getPlayerData(id:string, roomId:string) {
-        const players = this._redisClient.smembersAsync(`${roomId}:players`);
-        const points = this._redisClient.hgetAsync(roomId, `${id}:points`);
+        const players = this._redisClient.smembersAsync(`${roomId}${RedisAffixes.Suffixes.PLAYERS}`);
+        const points = this._redisClient.hgetAsync(roomId, `${id}${RedisAffixes.Suffixes.PLAYER_POINTS}`);
         // const points = this._redisClient.hgetallAsync(roomId);
         return Promise.all([players, points]);
     }

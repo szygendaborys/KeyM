@@ -49,6 +49,10 @@ export default class TypingHandler {
         })
     }
 
+    public checkIfShouldFinishTheGame(points:string) {
+        return this._gameText.length === Number(points);
+    }
+
     private async _getGameTextValue(socketId:string, roomId:string) {
         return this._redisClient.getAsync(`${roomId}_${socketId}:${RedisAffixes.Suffixes.PLAYER_TEXT}`);;
     }

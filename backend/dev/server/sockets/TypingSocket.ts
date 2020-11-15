@@ -1,14 +1,16 @@
 import { stringify } from "querystring";
 import { Socket } from "socket.io";
+import GameManager from "../game/GameManager";
 import PointHandler from "../game/points/PointsHandler";
 import RoomManager from "../game/room/RoomManager";
 import TypingHandler from "../game/typing/TypingHandler";
+import SocketController from "./controller/SocketController";
 TypingHandler
-class TypingSocket {
-    private _socket:Socket;
+class TypingSocket extends SocketController {
     private _roomManager:RoomManager = new RoomManager();
 
     constructor(socket:Socket){
+        super(socket);
         this._socket = socket;
         this._init();
     }
@@ -34,6 +36,10 @@ class TypingSocket {
                     points
                 }
                 this._socket.broadcast.to(roomId).emit('add point', data);
+
+                if(typingHandler.checkIfShouldFinishTheGame(points)) 
+                    new GameManager(roomId).finishGame(this._socket.id);
+                
             });
 
             typingHandler.addCharToPlayerString(this._socket.id, roomId, char);

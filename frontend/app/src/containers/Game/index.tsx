@@ -78,6 +78,11 @@ export const Game = () => {
             console.log(`A player of id ${socketId} score is ${points}`);
         });
 
+        socket.on("game finished", ({winner}:{winner:string}) => {
+            console.info("GAME FINISHED");
+            console.info(`THE WINNER IS: ${winner}`);
+        });
+
         // socket.on("joined to", (data:{roomId:string}) => {
         //     console.log("joined" + data.roomId)
         //     setRoomId(data.roomId);
@@ -90,8 +95,6 @@ export const Game = () => {
     return (
         <Wrapper>
             Points: {points}
-            {/* <GameText text={gameText} playerText={playerText} keyIndex={keyIndex} /> */}
-
             <TextWrapper width='60%' height='auto' horizontal>
                 {gameText.split('').map((char:string, i:number) => <Letter key={`char${i}`} char={char} index={i} isIndexTarget={keyIndex === i} playerChar={playerText[i]}/>)}
                 <GameTextArea ref={textareaDOM} onKeyDown={(e:any) => typingListener(e)}/>

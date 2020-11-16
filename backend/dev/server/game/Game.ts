@@ -15,7 +15,7 @@ export default class Game {
     }
 
     public async startGame() {
-        
+        console.log("starting game...");
     }
 
     public addPlayer(player:PlayerDTO) {
@@ -24,6 +24,10 @@ export default class Game {
 
     public removePlayer(player:PlayerDTO) {
         this._players.delete(player);
+    }
+
+    public get isFull() {
+        return this._demandedPlayers === this.players.size;
     }
 
     public get demandedPlayers() {
@@ -36,5 +40,9 @@ export default class Game {
 
     public get gameType() {
         return this._gameType;
+    }
+
+    public get socketIds():string[] {
+        return Array.from(this._players).map(el => el.socketId);
     }
 }

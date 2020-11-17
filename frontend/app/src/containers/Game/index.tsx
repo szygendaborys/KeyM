@@ -5,6 +5,7 @@ import Letter from "./GameText/Letter";
 import GameTextArea from "./GameText/GameTextArea";
 import TextWrapper from "./GameText/TextWrapper";
 import { isCharacterKeyPress } from './Utils/TypingUtils';
+import SearchInput from "../LandingPage/SearchInput";
 
 let socket:typeof Socket;
 const fetchedGameText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;

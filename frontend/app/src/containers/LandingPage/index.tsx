@@ -5,6 +5,7 @@ import useHost from '../../contexts/host';
 import Input from '../Game/Input';
 import Wrapper from '../../components/Wrapper';
 import Game from '../Game';
+import SearchInput from './SearchInput';
 
 const TestApiButton = styled.button`
     width:400px;
@@ -68,8 +69,10 @@ export const LandingPage = () => {
     }
 
     return (
-        <Wrapper>
+        <Wrapper height="100%" width="100%">
+            {/* FOR DEBUG PURPOSE ONLY */}
             <Game />
+            {/* FOR DEBUG PURPOSE ONLY */}
         </Wrapper>
     )
 }

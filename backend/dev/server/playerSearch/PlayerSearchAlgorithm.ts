@@ -67,8 +67,6 @@ export default class PlayerSearchAlgorithm{
                 }
             }
 
-            console.log(games);
-
             PlayerSearchModel.removePlayersFromQueue(playerSocketsToRemove).then(() => {
                 this._hasFinishedPreviousSearch = true;
             });

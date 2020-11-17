@@ -9,6 +9,7 @@ import {
   BrowserRouter as Router,
   Route,
 } from 'react-router-dom';
+import TestingView from '../TestingView';
 
 // /* color: ${props => (props.whiteColor ? 'white' : 'black')}; */
 const GlobalStyle = createGlobalStyle`
@@ -48,6 +49,7 @@ const App = () => {
            <Navigation />
          */}
          <Route exact path={ROUTES.LANDING} component={LandingPage} />
+         <Route exact path={ROUTES.TESTING} component={TestingView} />
          {/* <Route path={ROUTES.SEARCH_PAGE} component={SearchPage} /> */}
        </MainApp>
        </ThemeProvider>

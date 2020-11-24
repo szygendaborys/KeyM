@@ -1,4 +1,4 @@
-import { prop, Typegoose, arrayProp } from 'typegoose';
+import { prop, Typegoose, arrayProp } from '@hasezoey/typegoose';
 
 export default class TestModel extends Typegoose {
 

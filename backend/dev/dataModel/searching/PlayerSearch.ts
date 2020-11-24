@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { prop, staticMethod, Typegoose } from 'typegoose';
+import { prop, staticMethod, Typegoose, InstanceType } from '@hasezoey/typegoose';
 
 export default class PlayerSearch extends Typegoose {
 

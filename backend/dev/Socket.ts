@@ -3,6 +3,8 @@ import { Server } from "http";
 import TypingSocket from "./sockets/TypingSocket";
 import { getRedisClient } from "./Redis";
 import RoomManager from "./services/game/room/RoomManager";
+import PlayerSearchSocket from "./sockets/PlayerSearchSocket";
+import RoomSocket from "./sockets/RoomSocket";
 // import { Server } from "https";
 
 const _testRoomId:string = 'testRoom123';
@@ -17,8 +19,8 @@ let initio = function(server:Server) {
     io = require('socket.io').listen(server); 
     io.origins('*:*');
 
-    const roomManager = new RoomManager();
-    roomManager.create();
+    // const roomManager = new RoomManager();
+    // roomManager.create();
 
     io.on('connection', (socket:Socket) => {
         console.log('a user connected');
@@ -27,11 +29,13 @@ let initio = function(server:Server) {
         });
 
         // player join
-        socket.join(_testRoomId);
-        roomManager.addPlayer(socket.id, _testRoomId);
-        socket.emit('joined to', {roomId: _testRoomId});
+        // socket.join(_testRoomId);
+        // roomManager.addPlayer(socket.id, _testRoomId);
+        // socket.emit('joined to', {roomId: _testRoomId});
         
         new TypingSocket(socket);
+        new PlayerSearchSocket(socket);
+        new RoomSocket(socket);
     });
 
     return io;

@@ -7,7 +7,7 @@ import TypingHandler from "../services/game/typing/TypingHandler";
 import SocketController from "./controller/SocketController";
 TypingHandler
 class TypingSocket extends SocketController {
-    private _roomManager:RoomManager = new RoomManager();
+    // private _roomManager:RoomManager = new RoomManager();
 
     constructor(socket:Socket){
         super(socket);
@@ -25,7 +25,6 @@ class TypingSocket extends SocketController {
         this._socket.on('char type', ({roomId,char,at}:{roomId:string, char:string, at:number}) => {
             const pointsHandler = new PointHandler(roomId);
             const typingHandler = new TypingHandler(pointsHandler);
-            console.log("click");
 
             if(typingHandler.checkChar(char, at))
                 pointsHandler.addPoint(this._socket.id)

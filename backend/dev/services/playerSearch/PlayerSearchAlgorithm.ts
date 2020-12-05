@@ -1,32 +1,22 @@
-import PlayerSearch from "../../dataModel/searching/PlayerSearch";
-import PlayerSearchModel from "../../models/PlayerSearchModel";
 import { Constants } from "../../utilities/Constants";
 import Game from "../game/Game";
-import PlayerSearchProvider from "./PlayerSearchProvider";
+import PlayerSearchDTO from "./PlayerSearchDTO";
 
-export default class PlayerSearchAlgorithm{
-    
-    private static _instance:PlayerSearchAlgorithm;
+export default abstract class PlayerSearchAlgorithm {
 
-    public static getInstance() {
-        if(!PlayerSearchAlgorithm._instance)
-            PlayerSearchAlgorithm._instance = new PlayerSearchAlgorithm();
+    protected _playersPool:Map<string, PlayerSearchDTO> = new Map();
 
-        return PlayerSearchAlgorithm._instance;
-    }
-
-    private _delay:number = 5000; //5 seconds
-    private _hasFinishedPreviousSearch:boolean = true;
+    private _delay:number = 5000 // 5 sec delay iterations
     private _iterationsWithNotDeliveredSearch:number = 0;
-    private _dataProvider = new PlayerSearchProvider();
+    private _hasFinishedPreviousSearch:boolean = true;
 
-    public async initializeSearch() {
+    protected initSearch() {
         setInterval(() => {
             if(this._hasFinishedPreviousSearch) {
                 try {
                     this._search();
                 } catch (error) {
-                    console.error("Error");
+                    console.error("Error search");
                     console.error(error);
                     this._hasFinishedPreviousSearch = true;
                 }
@@ -36,28 +26,20 @@ export default class PlayerSearchAlgorithm{
         }, this._delay);        
     }
 
-    private async _search() {
+    private _search() {
         const games:Game[] = [];
-
         this._hasFinishedPreviousSearch = false;
         this._iterationsWithNotDeliveredSearch = 0;
 
         const playerSocketsToRemove:string[] = [];
-
-        this._dataProvider.fetchData().then(data => {
-            const { playersInQueue } = data;
-
-            for(const player of playersInQueue) {
-                let gameInstance = games.find(game => game.demandedPlayers === player.demandedPlayers && !game.isFull);
-
-                if(!gameInstance) {
-                    gameInstance = new Game(player.demandedPlayers, Constants.GameTypes.NORMAL);  
-                    games.push(gameInstance);
-                }
-
-                gameInstance.addPlayer(player);
+        for(const [socketId, player] of this._playersPool.entries()) {
+            let gameInstance = games.find(game => game.demandedPlayers === player.demandedPlayers && !game.isFull);
+            if(!gameInstance) {
+                gameInstance = new Game(player.demandedPlayers, Constants.GameTypes.NORMAL);  
+                games.push(gameInstance);
             }
-
+            gameInstance.addPlayer(player);
+    
             for(let i = 0; i < games.length; i++) {
                 const gameInstance = games[i];
                 if(gameInstance.isFull) {
@@ -66,12 +48,13 @@ export default class PlayerSearchAlgorithm{
                     games.splice(i, 1);
                 }
             }
+        }
 
-            PlayerSearchModel.removePlayersFromQueue(playerSocketsToRemove).then(() => {
-                this._hasFinishedPreviousSearch = true;
-            });
+        // remove players that started the game from pool
+        playerSocketsToRemove.map(socketId => this._playersPool.delete(socketId));
+        console.log(this._playersPool.size)
 
-        })
+        this._hasFinishedPreviousSearch = true;
     }
-}
 
+}

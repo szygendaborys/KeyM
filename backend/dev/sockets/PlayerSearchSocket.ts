@@ -1,12 +1,10 @@
 import { Socket } from "socket.io";
-import PlayerSearch from "../dataModel/searching/PlayerSearch";
-import PlayerSearchModel from "../models/PlayerSearchModel";
-import PlayerSearchHandler from "../services/playerSearch/PlayerSearchAlgorithm";
+import PlayerSearch from "../services/playerSearch/PlayerSearch";
 import SocketController from "./controller/SocketController";
 
 export default class PlayerSearchSocket extends SocketController {
 
-    private _handler = PlayerSearchHandler.getInstance();
+    private _playersPool:PlayerSearch = PlayerSearch.getInstance();
 
     constructor(socket:Socket) {
         super(socket);
@@ -18,10 +16,14 @@ export default class PlayerSearchSocket extends SocketController {
     }
 
     private _initAddPlayerToSearch() {
-        // socketId:string, username:string
 
-        this._socket.on('add search player', ({socketId,username,demandedPlayers}:{socketId:string, username:string, demandedPlayers:number}) => {
-            PlayerSearchModel.addPlayerToQueue(username, socketId, demandedPlayers);
+        this._socket.on('add search player', ({username,demandedPlayers}:{username:string, demandedPlayers:number}) => {
+            console.log("adding to search")
+            this._playersPool.addSocketToPool(this._socket, username, demandedPlayers);
+        })
+
+        this._socket.on('remove search player', ({socketId}:{socketId:string}) => {
+            console.log("removing a search")
         })
     }
     

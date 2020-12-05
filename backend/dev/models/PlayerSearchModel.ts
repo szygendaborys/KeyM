@@ -1,3 +1,3 @@
-import PlayerSearch from "../dataModel/searching/PlayerSearch";
+// import PlayerSearch from "../dataModel/searching/PlayerSearch";
 
-export default new PlayerSearch().getModelForClass(PlayerSearch);
+// export default new PlayerSearch().getModelForClass(PlayerSearch);

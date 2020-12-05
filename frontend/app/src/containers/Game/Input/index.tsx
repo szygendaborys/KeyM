@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import UserInput from './UserInput';
 import io from 'socket.io-client';
 import { Socket } from 'socket.io-client';
 import Wrapper from '../../../components/Wrapper';
+import SocketContext from '../../../contexts/socket/context';
 
 let socket:typeof Socket;
 
 export const Input:React.FunctionComponent = () => {
     // const [socket, setSocket] = useState<typeof Socket | undefined>(undefined);
+    const { socket } = useContext(SocketContext);
     const [room, setRoomId] = useState<string>('');
     const roomId = 'testRoom123';
     const [gameText, setGameText] = useState<string>('');
 
     useEffect(() => {   
-        socket = io();
 
         socket.on("add point", ({socketId,points}:{socketId:string, points:string}) => {
 
@@ -25,8 +26,6 @@ export const Input:React.FunctionComponent = () => {
         })
 
         setGameText(`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`);
-
-
 
         // return () => socket.disconnect();
         return () => {

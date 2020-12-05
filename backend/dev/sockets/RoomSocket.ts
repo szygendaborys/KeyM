@@ -14,6 +14,10 @@ class RoomSocket extends SocketController{
         
     } 
 
+    private _initAddGame() {
+        
+    }
+
 }
 
 export default RoomSocket;

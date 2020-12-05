@@ -1,8 +1,10 @@
+import { getio } from "../../Socket";
 import { Constants } from "../../utilities/Constants";
-import PlayerDTO from "./interfaces/playerDTO.interface";
+import RoomManager from "./room/RoomManager";
+import PlayerSearchDTO from "../playerSearch/PlayerSearchDTO";
 
 export default class Game {
-    private _players:Set<PlayerDTO>;
+    private _players:Set<PlayerSearchDTO>;
     private _demandedPlayers:number;
     private _gameType:Constants.GameTypes;
     
@@ -16,13 +18,22 @@ export default class Game {
 
     public async startGame() {
         console.log("starting game...");
+        const roomManager = new RoomManager();
+        for(const player of Array.from(this._players)) {
+            roomManager.addPlayer(player);
+        }
+
+        getio().to(roomManager.roomId.toString()).emit('start game',{
+            roomId: roomManager.roomId,
+            msg: ':)'
+        })
     }
 
-    public addPlayer(player:PlayerDTO) {
+    public addPlayer(player:PlayerSearchDTO) {
         this._players.add(player);
     }
 
-    public removePlayer(player:PlayerDTO) {
+    public removePlayer(player:PlayerSearchDTO) {
         this._players.delete(player);
     }
 
@@ -43,6 +54,6 @@ export default class Game {
     }
 
     public get socketIds():string[] {
-        return Array.from(this._players).map(el => el.socketId);
+        return Array.from(this._players).map(el => el.socket.id);
     }
 }

@@ -1,16 +1,15 @@
-import React, { useEffect, useState, useReducer, useRef } from "react";
-import io, { Socket } from "socket.io-client";
+import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import Wrapper from "../../components/Wrapper";
-import Letter from "./GameText/Letter";
+import SocketContext from "../../contexts/socket/context";
 import GameTextArea from "./GameText/GameTextArea";
+import Letter from "./GameText/Letter";
 import TextWrapper from "./GameText/TextWrapper";
 import { isCharacterKeyPress } from './Utils/TypingUtils';
-import SearchInput from "../LandingPage/SearchInput";
 
-let socket:typeof Socket;
 const fetchedGameText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
 
 export const Game = () => {
+    const { socket } = useContext(SocketContext);
     const textareaDOM:any = useRef(null);
     const [points, setPoints] = useState<number>(0);
     const [roomId, setRoomId] = useState<string>('testRoom123');
@@ -69,7 +68,6 @@ export const Game = () => {
     useEffect(() => {   
         setGameText(fetchedGameText);
 
-        socket = io();
 
         textareaDOM.current.focus();
         

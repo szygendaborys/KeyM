@@ -1,5 +1,5 @@
 import RedisAffixes from "../../../constants/RedisAffixes";
-import { getRedisClient } from "../../Redis";
+import { getRedisClient } from "../../../Redis";
 import PointHandler from "../points/PointsHandler";
 
 export default class TypingHandler {

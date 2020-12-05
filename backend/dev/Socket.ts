@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import { Server } from "http";
 import TypingSocket from "./sockets/TypingSocket";
 import { getRedisClient } from "./Redis";
-import RoomManager from "./game/room/RoomManager";
+import RoomManager from "./services/game/room/RoomManager";
 // import { Server } from "https";
 
 const _testRoomId:string = 'testRoom123';

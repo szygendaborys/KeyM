@@ -1,4 +1,4 @@
-import { getio } from "../Socket";
+import { getio } from "../../Socket";
 
 export default class GameManager {
 

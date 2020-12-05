@@ -1,6 +1,6 @@
 
 import * as express from "express";
-import { Constants } from "../../utilities/Constants";
+import { Constants } from "../utilities/Constants";
 import ErrorHandler from "../ErrorHandler";
 import * as ERR_CODE from '../errorHandling/errorConstants';
 import Controller from "../interfaces/controller.interface";

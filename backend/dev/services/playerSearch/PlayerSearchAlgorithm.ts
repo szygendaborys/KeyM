@@ -55,7 +55,7 @@ export default class PlayerSearchAlgorithm{
                     games.push(gameInstance);
                 }
 
-                gameInstance.addPlayer(player as PlayerSearch);
+                gameInstance.addPlayer(player);
             }
 
             for(let i = 0; i < games.length; i++) {

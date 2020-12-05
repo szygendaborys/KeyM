@@ -1,5 +1,5 @@
 import * as EN from './errorHandling/errorMessages';
-import { Constants } from '../utilities/Constants';
+import { Constants } from './utilities/Constants';
 
 export default class ErrorHandler extends Error {
     public statusCode: number;

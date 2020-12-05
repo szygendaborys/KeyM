@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
-import PlayerSearch from "../../dataModel/searching/PlayerSearch";
-import PlayerSearchModel from "../../models/PlayerSearchModel";
-import PlayerSearchHandler from "../playerSearch/PlayerSearchAlgorithm";
+import PlayerSearch from "../dataModel/searching/PlayerSearch";
+import PlayerSearchModel from "../models/PlayerSearchModel";
+import PlayerSearchHandler from "../services/playerSearch/PlayerSearchAlgorithm";
 import SocketController from "./controller/SocketController";
 
 export default class PlayerSearchSocket extends SocketController {

@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
-    "debug": "nodemon build/server/index.js",
-    "start": "ts-node-dev --respawn dev/server/index.ts",
+    "debug": "nodemon build/index.js",
+    "start": "ts-node-dev --respawn dev/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Borys Szygenda",

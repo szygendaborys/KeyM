@@ -4,6 +4,7 @@ import './App.css';
 
 import * as ROUTES from '../../constants/routes';
 import LandingPage from '../LandingPage';
+import Game from '../Game';
 
 import {
   BrowserRouter as Router,
@@ -50,6 +51,7 @@ const App = () => {
          */}
          <Route exact path={ROUTES.LANDING} component={LandingPage} />
          <Route exact path={ROUTES.TESTING} component={TestingView} />
+         <Route path={ROUTES.GAME} component={Game} />
          {/* <Route path={ROUTES.SEARCH_PAGE} component={SearchPage} /> */}
        </MainApp>
        </ThemeProvider>

@@ -5,7 +5,7 @@ export default class Room {
     private _gameText:string;
     private _players:string[];
 
-    constuctor(id:mongoose.Types.ObjectId, players:string[], gameText:string) {
+    constructor(id:mongoose.Types.ObjectId, players:string[], gameText:string) {
         this._id = id;
         this._players = players;
         this._gameText = gameText;

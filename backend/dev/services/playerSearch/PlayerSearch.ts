@@ -20,4 +20,8 @@ export default class PlayerSearch extends PlayerSearchAlgorithm {
     public addSocketToPool(socket:Socket, username:string, demandedPlayers:number) {
         this._playersPool.set(socket.id, new PlayerSearchDTO(socket,username,demandedPlayers));
     }
+
+    public removeSocketFromPool(socket:Socket) {
+        this._playersPool.delete(socket.id);
+    }
 }

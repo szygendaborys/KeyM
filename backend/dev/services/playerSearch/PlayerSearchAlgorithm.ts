@@ -52,8 +52,6 @@ export default abstract class PlayerSearchAlgorithm {
 
         // remove players that started the game from pool
         playerSocketsToRemove.map(socketId => this._playersPool.delete(socketId));
-        console.log(this._playersPool.size)
-
         this._hasFinishedPreviousSearch = true;
     }
 

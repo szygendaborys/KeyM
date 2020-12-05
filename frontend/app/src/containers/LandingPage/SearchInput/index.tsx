@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect, SelectHTMLAttributes, useContext } from 'react';
 import Wrapper from "../../../components/Wrapper";
 import { PlayerInput, PlayerNumber, PlayerSubmit } from './PlayerInputs';
-import { Socket } from 'socket.io-client';
 import SocketContext from '../../../contexts/socket/context';
+import { useHistory } from 'react-router-dom';
 
 export const SearchInput = () => {
 
     const [searching, setSearching] = useState(false);
     const [gameFound, setGameFound] = useState(false);
+    const history = useHistory();
 
     const [nickname, setNickname] = useState("");
     const [demandedPlayers, setDemandedPlayers] = useState(2);
@@ -16,9 +17,11 @@ export const SearchInput = () => {
 
     useEffect(() => {   
 
-        socket.on("start game", (data:{roomId:string}) => {
-            console.log("game found");
+        socket.on("start game", ({roomId}:{roomId:string}) => {
             setGameFound(true);
+            setTimeout(() => {
+                history.push(`/game/${roomId}`)
+            }, 5000)
         })
 
         return () => {

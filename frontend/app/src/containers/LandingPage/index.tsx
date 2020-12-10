@@ -37,21 +37,6 @@ export const LandingPage = () => {
         });
     }, [])
 
-    const testApi = () => {
-        const api = `/api/home`;
-        fetch(`${api}`).then(res => {
-            console.log("An example of fetching data on click.")
-            console.log(res);
-            return res.json();
-        }).then(data => {
-            setIsLoading(false);
-            console.log(data);
-        })
-        .catch(err => {
-            console.log(err);
-            setError(err);
-        });    }
-
     if(error) {
         return (
             <Example>
@@ -70,9 +55,7 @@ export const LandingPage = () => {
 
     return (
         <Wrapper height="100%" width="100%">
-            {/* FOR DEBUG PURPOSE ONLY */}
-            <Game />
-            {/* FOR DEBUG PURPOSE ONLY */}
+            <SearchInput />
         </Wrapper>
     )
 }

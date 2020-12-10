@@ -1,12 +1,14 @@
-import { StringifyOptions } from "querystring";
 import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
-import { useLocation, useParams, useRouteMatch } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Wrapper from "../../components/Wrapper";
 import SocketContext from "../../contexts/socket/context";
+import GameError from "../../interfaces/GameError.interface";
 import GameTextArea from "./GameText/GameTextArea";
 import Letter from "./GameText/Letter";
 import TextWrapper from "./GameText/TextWrapper";
 import PlayerDTO from "./Interfaces/PlayerDTO.interface";
+import Player from "./Player";
+import PlayerWrapper from "./Player/PlayerWrapper";
 import { getGameData } from "./Utils/GetGameData";
 import { isCharacterKeyPress } from './Utils/TypingUtils';
 
@@ -15,8 +17,10 @@ const fetchedGameText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit
 export const Game = () => {
     const { socket } = useContext(SocketContext);
     const { roomId } = useParams<{ roomId: string }>();
-    
+    const history = useHistory();
+
     const textareaDOM:any = useRef(null);
+    const [errors, setErrors] = useState<GameError[]>([]);
     const [points, setPoints] = useState<number>(0);
     const [keyIndex, setKeyIndex] = useState<number>(0);
     const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
@@ -24,7 +28,9 @@ export const Game = () => {
     const [gameText, setGameText] = useState<string>('');
     const gameTextRef = useRef(fetchedGameText);
     const [playerText, setPlayerText] = useState<string>('');
-    const [players, setPlayers] = useState<PlayerDTO[]>([]);
+    // const [players, setPlayers] = useState<PlayerDTO[]>([]);
+    const players = useRef<PlayerDTO[]>([]);
+    const winner = useRef<string>('');
 
     const getPlayerState = (players:PlayerDTO[], socketId:string, username:string, points:number = 0) => {
         const playerDTO:PlayerDTO = {
@@ -36,6 +42,28 @@ export const Game = () => {
         } else {
             players[index] = playerDTO;
         }
+    }
+
+    const setPlayerPoints = (socketId:string, currentPoints:number = 0, players:any) => {
+        const playersToChange = [...players.current];
+        const player = playersToChange.find(el => el.socketId === socketId);
+        if(player) {
+            player.points = currentPoints;
+            // setPlayers(playersToChange);
+            players.current = playersToChange;
+            forceUpdate();
+        }
+    }
+
+    const setWinner = (winnerId:string) => {
+        document.removeEventListener('click', () => textareaDOM.current.focus(), true)
+        
+        winner.current = winnerId;
+        forceUpdate();
+
+        setTimeout(() => {
+            history.push('/');
+        }, 2000);
     }
 
     let typingListener = function(e:any) {
@@ -91,22 +119,26 @@ export const Game = () => {
             for(const [socket, username] of Object.entries(data)) {
                 getPlayerState(playersToChange, socket, username);
             }
-            setPlayers(playersToChange);
+            // setPlayers(playersToChange);
+            players.current = playersToChange;
+
+            if(!playersToChange.find(el => el.socketId === socket.id)) {
+                const errs = [...errors];
+                errs.push({
+                    msg: 'You do not have access to this room',
+                    code: 401
+                });
+                setErrors(errs);
+            }
 
             setGameText(fetchedGameText);
 
-            textareaDOM.current.focus();
+            if(textareaDOM.current) textareaDOM.current.focus();
             
-            document.addEventListener('click', () => textareaDOM.current.focus(), true);
+            document.addEventListener('click', () => {
+                if(textareaDOM.current) textareaDOM.current.focus()
+            }, true);
     
-            socket.on("add point", ({socketId,points}:{socketId:string, points:string}) => {
-                console.log(`A player of id ${socketId} score is ${points}`);
-            });
-    
-            socket.on("game finished", ({winner}:{winner:string}) => {
-                console.info("GAME FINISHED");
-                console.info(`THE WINNER IS: ${winner}`);
-            });
         })
 
         // return () => socket.disconnect();
@@ -115,13 +147,67 @@ export const Game = () => {
         };
     }, []);
 
+    useEffect(() => {
+
+        socket.on("add point", ({socketId,points}:{socketId:string, points:number}) => {
+            console.log(`A player of id ${socketId} score is ${points}`);
+            setPlayerPoints(socketId, points, players);
+        });
+
+        socket.on("game finished", ({winner}:{winner:string}) => {
+            console.info("GAME FINISHED");
+            console.info(`THE WINNER IS: ${winner}`);
+            setWinner(winner);
+        });
+
+        // return () => {
+        //     cleanup
+        // }
+    }, [])
+
+    if(errors.length > 0) {
+        return (
+            <Wrapper height="100%">
+                {
+                    errors.map(error => {
+                        return error.msg;
+                    })
+                }
+            </Wrapper>
+        )
+    }
+
+    if(winner.current) {
+        return (
+            <Wrapper height="100%">
+                Game finished!
+                The winner is {winner.current}
+            </Wrapper>
+        )
+    }
+
     return (
         <Wrapper height="100%">
+            <PlayerWrapper side="left"> 
+                {
+                    players.current.map((player,i) => {
+                        if(i % 2 === 0) return <Player key={`player${i}`} socketId={player.socketId} username={player.username} points={player.points} maxPoints={gameText.length} />
+                    })
+                }
+            </PlayerWrapper>
             Points: {points}
             <TextWrapper width='60%' height='auto' horizontal>
                 {gameText.split('').map((char:string, i:number) => <Letter key={`char${i}`} char={char} index={i} isIndexTarget={keyIndex === i} playerChar={playerText[i]}/>)}
                 <GameTextArea ref={textareaDOM} onKeyDown={(e:any) => typingListener(e)}/>
             </TextWrapper>
+            <PlayerWrapper side="right"> 
+            {
+                players.current.map((player,i) => {
+                    if(i % 2 !== 0) return <Player key={`player${i}`} socketId={player.socketId} username={player.username} points={player.points} maxPoints={gameText.length} />
+                })
+            }
+            </PlayerWrapper>
+
         </Wrapper>
     );
 }

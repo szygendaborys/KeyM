@@ -4,10 +4,10 @@ import RoomManager from "./room/RoomManager";
 
 export default class GameManager {
 
-    private _roomId:mongoose.Types.ObjectId;
+    private _roomId:mongoose.Types.ObjectId | string; 
     private _io = getio();
 
-    constructor(roomId:mongoose.Types.ObjectId){
+    constructor(roomId:mongoose.Types.ObjectId | string){
         this._roomId = roomId;
     }
 

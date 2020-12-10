@@ -8,7 +8,7 @@ export default class RoomManager {
     private _redisClient = getRedisClient();
     private _roomId:string;
 
-    constructor(roomId?:mongoose.Types.ObjectId) {
+    constructor(roomId?:mongoose.Types.ObjectId | string) {
         this._roomId = roomId ? roomId.toString() : new mongoose.Types.ObjectId().toString();
     }
 

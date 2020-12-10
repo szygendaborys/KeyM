@@ -1,11 +1,10 @@
-import { stringify } from "querystring";
 import { Socket } from "socket.io";
 import GameManager from "../services/game/GameManager";
 import PointHandler from "../services/game/points/PointsHandler";
 import RoomManager from "../services/game/room/RoomManager";
 import TypingHandler from "../services/game/typing/TypingHandler";
 import SocketController from "./controller/SocketController";
-TypingHandler
+
 class TypingSocket extends SocketController {
     // private _roomManager:RoomManager = new RoomManager();
 

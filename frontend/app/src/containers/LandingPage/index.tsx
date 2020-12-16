@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Example from './Example';
 import styled from 'styled-components';
-import useHost from '../../contexts/host';
-import Input from '../Game/Input';
 import Wrapper from '../../components/Wrapper';
-import Game from '../Game';
+import Example from './Example';
 import SearchInput from './SearchInput';
 
 const TestApiButton = styled.button`

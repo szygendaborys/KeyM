@@ -5,8 +5,6 @@ import { Socket } from 'socket.io-client';
 import Wrapper from '../../../components/Wrapper';
 import SocketContext from '../../../contexts/socket/context';
 
-let socket:typeof Socket;
-
 export const Input:React.FunctionComponent = () => {
     // const [socket, setSocket] = useState<typeof Socket | undefined>(undefined);
     const { socket } = useContext(SocketContext);

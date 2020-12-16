@@ -1,3 +1,4 @@
+import logger from './config/winston';
 import * as EN from './errorHandling/errorMessages';
 import { Constants } from './utilities/Constants';
 
@@ -26,7 +27,7 @@ export default class ErrorHandler extends Error {
             //x-opcjonalny parametr który dla wyrażenia $x w tekście podstawi wartość liczbową
             this.message = this.message.replace('$x',this.pattern_x.toString());
         }
-        console.error(this.message);
+        logger.error(this.message);
     }
     private fetchErrorMessage = (file:any, msgCode: string, params?: any) => !params ? file[msgCode] : file[msgCode](params);
     private getFile = (lang:string) => this.fileLangs[lang];

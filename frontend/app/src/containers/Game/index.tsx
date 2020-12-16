@@ -109,6 +109,7 @@ export const Game = () => {
         setKeyIndex(index);
         setPlayerText(text);
         setPoints(playerPoints);
+        setPlayerPoints(socket.id, playerPoints, players);
         forceUpdate();
     }
 

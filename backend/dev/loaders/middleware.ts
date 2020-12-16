@@ -7,9 +7,9 @@ export default async({ app }:{ app:express.Application }) => {
     let bodyParser = require('body-parser');
     csurf({cookie: true});
 
-    app.use(bodyParser.json({limit:'10mb'}));
-    app.use(bodyParser.text({limit:'10mb'}));
-    app.use(bodyParser.urlencoded({extended: true, limit:'10mb', parameterLimit: 2000}));
+    app.use(bodyParser.json({limit:'5mb'}));
+    app.use(bodyParser.text({limit:'5mb'}));
+    app.use(bodyParser.urlencoded({extended: true, limit:'5mb', parameterLimit: 500}));
 
     app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
         res.setHeader('Access-Control-Allow-Origin', '*');

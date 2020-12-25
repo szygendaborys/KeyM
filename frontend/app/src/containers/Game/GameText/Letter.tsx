@@ -21,7 +21,7 @@ const LetterComponent = styled.div<componentProps>`
     /* margin-left: ${props => props.isSpace ? '5px' : '0'}; */
     font-size: 1.2em;
     min-height:32px;
-    color: ${props => props.theme.letterState[props.state]}
+    color: ${props => props.theme.letterState[props.state]};
 `;
 
 

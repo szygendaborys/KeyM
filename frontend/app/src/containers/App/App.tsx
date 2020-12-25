@@ -36,6 +36,13 @@ const GlobalTheme = {
     correct: 'green',
     incorrect: 'red',
     unknown: 'gray'
+  },
+  textColours: {
+    basic: 'whitesmoke',
+    secondary: 'black',
+  },
+  backgroundColours: {
+    basic: 'black',
   }
 };
 

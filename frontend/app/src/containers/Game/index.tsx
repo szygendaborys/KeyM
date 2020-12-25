@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import SubTitle from "../../components/SubTitle";
 import Wrapper from "../../components/Wrapper";
 import SocketContext from "../../contexts/socket/context";
 import GameError from "../../interfaces/GameError.interface";
@@ -116,30 +117,40 @@ export const Game = () => {
     useEffect(() => {   
         // console.log(match);
         getGameData(roomId).then(({data}:{data:{[key:string]:string}}) => {
-            const playersToChange:PlayerDTO[] = [];
-            for(const [socket, username] of Object.entries(data)) {
-                getPlayerState(playersToChange, socket, username);
-            }
-            // setPlayers(playersToChange);
-            players.current = playersToChange;
+            if(data) {
+                const playersToChange:PlayerDTO[] = [];
+                for(const [socket, username] of Object.entries(data)) {
+                    getPlayerState(playersToChange, socket, username);
+                }
+                // setPlayers(playersToChange);
+                players.current = playersToChange;
 
-            if(!playersToChange.find(el => el.socketId === socket.id)) {
-                const errs = [...errors];
-                errs.push({
-                    msg: 'You do not have access to this room',
-                    code: 401
-                });
-                setErrors(errs);
-            }
+                if(!playersToChange.find(el => el.socketId === socket.id)) {
+                    const errs = [...errors];
+                    errs.push({
+                        msg: 'You do not have access to this room',
+                        code: 401
+                    });
+                    setErrors(errs);
+                }
 
-            setGameText(fetchedGameText);
+                setGameText(fetchedGameText);
 
-            if(textareaDOM.current) textareaDOM.current.focus();
-            
-            document.addEventListener('click', () => {
-                if(textareaDOM.current) textareaDOM.current.focus()
-            }, true);
+                if(textareaDOM.current) textareaDOM.current.focus();
+                
+                document.addEventListener('click', () => {
+                    if(textareaDOM.current) textareaDOM.current.focus()
+                }, true);
     
+            } else {
+                setErrors([{
+                    msg: 'ERR: An undentified error occurred',
+                    code: 500
+                },{
+                    msg: 'ERR: Game not found.',
+                    code: 404
+                }]);
+            }
         })
 
         // return () => socket.disconnect();
@@ -171,7 +182,7 @@ export const Game = () => {
             <Wrapper height="100%">
                 {
                     errors.map(error => {
-                        return error.msg;
+                        return <SubTitle size="1em">{error.msg}</SubTitle>;
                     })
                 }
             </Wrapper>
